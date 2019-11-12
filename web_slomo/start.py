@@ -13,6 +13,7 @@ from flask import Flask,url_for,request,render_template,session
 #reload(sys)
 #sys.setdefaultencoding("utf-8")
 
+#这里应该将static_url_path设为空，否则html中的每个资源连接都要以static开头才行，但是static_folder不要动，当来一个请求url时，会到static_folder下找静态文件，但是也会匹配static_url_path开头
 app = Flask(__name__, static_url_path='')  # ,static_folder='',
 
 
