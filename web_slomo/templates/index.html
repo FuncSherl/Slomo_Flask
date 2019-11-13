@@ -1,18 +1,125 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
-
-<video width="640" height="480" controls autoplay loop >
-  <source src="video/{{ movie_name }}.ogg" type="video/ogg" />
-  <source src="video/{{ movie_name }}.mp4" type="video/mp4" />
-  <source src="video/{{ movie_name }}.webm" type="video/webm" />
+<html lang="en-US" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--  
+    Document Title
+    =============================================
+    -->
+    <title>Slomo Tools</title>
+    <!--  
+    Favicons
+    =============================================
+    -->
+   
+    <link rel="icon" type="image/ico"  href="favicon.ico">
+    
+    <link rel="manifest" href="/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="assets/images/favicons/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <!--  
+    Stylesheets
+    =============================================
+    
+    -->
+    <!-- Default stylesheets-->
+    <link href="assets/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Template specific stylesheets-->
+    <link href="assets/lib/owl.carousel/dist/assets/owl.carousel.css" rel="stylesheet">
+    <!-- Main stylesheet and color file-->
+    <link href="assets/css/style.css?a=1" rel="stylesheet">
+    <link id="color-scheme" href="assets/css/colors/default.css?a=1" rel="stylesheet">
+  </head>
   
+  
+  
+  <body data-spy="scroll"  data-offset="60">
+    <main>
+      <section class="top-part">
+        <div class="container">
+          <div class="row">
+            <div class="col-xs-12 col-xs-offset-0 col-sm-10 col-sm-offset-1 col-lg-8 col-lg-offset-2">
+              <h1>- SLOMO TOOLS -</h1>
+              <h2>视频时域超分辨率工具</h2>
+              <!-- <p>	Get the full pack today for free!</p> -->
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- 这里面添加上传等效果 -->
+      <div class="alert-banner"  >
+      	<div class="upload_file">
+	      	<!-- <label for="fileToUpload">选择上传文件</label> -->
+	        <input type="file" title="test" id="file" accept=".MP4, .mp4, .mkv" name="选择上传文件" onchange="fileSelected();">
 
-</video>
+        </div>
+      </div>
+      
+      <section class="variant-part">
+        <div class="container">
+        
+          <div class="row">
+            <div class="col-xs-12 col-sm-12 col-lg-12 text-intro">
+            
+              <!-- <h2>V2 = 4 Variants</h2>
+              <h3>Fully Responsive • 24/7 Support • Well documented</h3> -->
+              
+            </div>
+          </div>
+          
+          
+          <div class="row">
+          
+            <div class="variant col-xs-12 col-sm-6 col-lg-6">
 
-</body> 
+                
+                <video width="100%" controls autoplay loop >
+				  <source src="video/{{ movie_name_ori }}.ogg" type="video/ogg" />
+				  <source src="video/{{ movie_name_ori }}.mp4" type="video/mp4" />
+				  <source src="video/{{ movie_name_ori }}.webm" type="video/webm" />
+				</video>
+                
+            </div>
+                
+            <div class="variant col-xs-12 col-sm-6 col-lg-6">
+            
+            <!-- <a href="video-background.html" target="_blank"><img class="img-responsive" src="assets/images/video-background.jpg" alt="">
+                <h3> <span class="label label-success">NEW</span>	02. video-background / Countdown</h3></a> -->
+                
+               <video width="100%" controls autoplay loop >
+				  <source src="video/{{ movie_name_slomo }}.ogg" type="video/ogg" />
+				  <source src="video/{{ movie_name_slomo }}.mp4" type="video/mp4" />
+				  <source src="video/{{ movie_name_slomo }}.webm" type="video/webm" />
+				</video>
+                
+            </div>
+                
+          </div>
+          
+          <!-- <div class="row">
+            <div class="variant col-xs-12 col-sm-6 col-lg-6"><a href="ken-burns-background.html" target="_blank"><img class="img-responsive" src="assets/images/ken-burns-background.jpg" alt="">
+                <h3>03. ken-burns-background / Countdown</h3></a></div>
+            <div class="variant col-xs-12 col-sm-6 col-lg-6"><a href="slider-background.html" target="_blank"><img class="img-responsive" src="assets/images/slider-background.jpg" alt="">
+                <h3>04. Slideshow-background / Countdown</h3></a></div>
+          </div> -->
+        </div>
+      </section>
+      <footer id="footer"><span class="copyright">design by Hao Xv </span> <br>
+      					  <span class="email">Email: haoxv@buaa.edu.cn </span>
+      </footer>
+    </main>
+    <!--  
+    JavaScripts
+    =============================================
+    -->
+    <script src="assets/lib/jquery/dist/jquery.js"></script>
+    <script src="assets/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="assets/lib/owl.carousel/dist/owl.carousel.js"></script>
+    <script src="assets/lib/ajaxchimp/jquery.ajaxchimp.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/myjs.js"></script>
+  </body>
 </html>

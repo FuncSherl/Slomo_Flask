@@ -5,7 +5,7 @@ Created on 2019年11月13日
 @author: sherl
 '''
 from flask import Flask
-from datetime import datetime
+from datetime import datetime,timedelta
 import sys
 from flask import Flask,url_for,request,render_template,session
 
@@ -20,7 +20,7 @@ app = Flask(__name__, static_url_path='')  # ,static_folder='',
 @app.route('/',methods=['GET','POST'])#  主页面
 def main_page():
     app.logger.debug(session)
-    return render_template('index.html', movie_name="test2")
+    return render_template('index.html', movie_name_ori="home", movie_name_slomo="home")
 
 
 #----------------------------------------------------------------------------------------
@@ -36,6 +36,7 @@ def not_found(e):
 if __name__ == '__main__':
     #print (url_for('static',filename='1.jpg') )
     app.debug = True#不可用于发布版本
+    app.send_file_max_age_default=timedelta(seconds=1)
     app.run(host='0.0.0.0',port=8000)
     
     
