@@ -5,11 +5,14 @@
 <title>Insert title here</title>
 </head>
 <body>
-<img src="static/img/web.png" />
 
-<video  controls="controls" width="640" height="360" poster="movie.jpg" >
-    <source src="video/test.mp4" type='video/mp4; codecs="avc1.4D401E, mp4a.40.2"'>
+<video width="640" height="480" controls autoplay loop >
+  <source src="video/{{ movie_name }}.ogg" type="video/ogg" />
+  <source src="video/{{ movie_name }}.mp4" type="video/mp4" />
+  <source src="video/{{ movie_name }}.webm" type="video/webm" />
+  
+
 </video>
 
-</body>
+</body> 
 </html>
