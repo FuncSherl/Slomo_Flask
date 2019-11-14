@@ -51,12 +51,52 @@
       </section>
       <!-- 这里面添加上传等效果 -->
       <div class="alert-banner"  >
-      	<div class="upload_file">
-	      	<!-- <label for="fileToUpload">选择上传文件</label> -->
-	        <input type="file" title="test" id="file" accept=".MP4, .mp4, .mkv" name="选择上传文件" onchange="fileSelected();">
 
-        </div>
-      </div>
+		<form action="/upload_file" onsubmit="return validate_form(this)"
+			method="POST" enctype='multipart/form-data'>
+
+
+
+			<div class="upload_file row">
+				<table class="upload_table">
+					<tr>
+					<td>
+						<label for="file">选择上传文件</label><br>
+						<input type="file" title="test" id="file"
+							accept=".MP4, .mp4, .mkv" name="file" required>
+					</td>
+					
+					<td>
+						<label for="hpro" >设置插入帧数:</label> <span id="label_hpro">6</span>
+						<input type="range" name="intercnt" min="1" max="10" id="hpro" onchange="change_range(this)"
+							list="tickmarks" />
+
+						<datalist id="tickmarks">
+							<option value="1" label='1'>
+							<option value="2">
+							<option value="3">
+							<option value="4">
+							<option value="5" label="5">
+							<option value="6">
+							<option value="7">
+							<option value="8">
+							<option value="9">
+							<option value="10" label="10">
+						</datalist>
+					</td>
+					
+					<td id="upload_btn_td">
+						<button type="submit" class="btn btn-danger " id='upload_btn'>开始转换</button>
+					</td>
+						
+					</tr>
+				</table>
+			</div>
+
+
+		</form>
+
+	</div>
       
       <section class="variant-part">
         <div class="container">
@@ -73,18 +113,19 @@
           
           <div class="row">
           
-            <div class="variant col-xs-12 col-sm-6 col-lg-6">
+            <div class="variant col-xs-12 col-sm-6 col-lg-6 " id="video_div">
 
-                
+               
                 <video class="video_play" id="video_ori" controls autoplay loop >
-				  <source src="video/{{ movie_name_ori }}.ogg" type="video/ogg" />
-				  <source src="video/{{ movie_name_ori }}.mp4" type="video/mp4" />
-				  <source src="video/{{ movie_name_ori }}.webm" type="video/webm" />
+				  <source src="upload/{{ movie_name_ori }}.ogg" type="video/ogg" />
+				  <source src="upload/{{ movie_name_ori }}.mp4" type="video/mp4" />
+				  <source src="upload/{{ movie_name_ori }}.webm" type="video/webm" />
 				</video>
                 <h2>原始视频 </h2>
+              
             </div>
                 
-            <div class="variant col-xs-12 col-sm-6 col-lg-6">
+            <div class="variant col-xs-12 col-sm-6 col-lg-6 " id="video_div">
             
             <!-- <a href="video-background.html" target="_blank"><img class="img-responsive" src="assets/images/video-background.jpg" alt="">
                 <h3> <span class="label label-success">NEW</span>	02. video-background / Countdown</h3></a> -->

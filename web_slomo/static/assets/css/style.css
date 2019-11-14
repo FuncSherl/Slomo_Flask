@@ -508,7 +508,7 @@ a.purchase {
 
 .upload_file {
     position: relative;
-    /* display: inline; */
+     /* display: inline;  */
     background: #101e2a;
     border: 1px solid #101e20;
     border-radius: 4px;
@@ -546,6 +546,49 @@ a.purchase {
     text-decoration: none;
 }
 
+#upload_btn_td{
+	width:20%;
+}
+
+#upload_btn_td button{
+	width:40%;
+	height:60px;
+}
+
+.upload_table{
+	width:100%;
+	align:"center";
+	vertical-align: middle;
+	
+}
+
+.upload_table tr{
+	width:100%;
+}
+
+.upload_table td{
+	width:30%;
+	padding:6px;
+}
+
+#file{
+	border: 2px solid #888a85;
+}
+
+#hpro{
+	/* width:30%; */
+	border: 1px solid #101e2a;
+	position: relative;
+	vertical-align:bottom;
+}
+
+#video_div{
+	height:100%;
+}
+
+#tickmarks{
+	color:#004974;
+}
 
 
 
