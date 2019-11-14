@@ -489,9 +489,19 @@ a.purchase {
 }
 
 
-video {
+.video_play {
 	width:100%;
 	height:100%;
+}
+
+.video_play#video_ori{
+	border: 5px solid #cc0000;
+    border-radius: 4px;
+}
+
+.video_play#video_slomo{
+	border: 5px solid #73d216;
+    border-radius: 4px;
 }
 
 
