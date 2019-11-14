@@ -9,6 +9,8 @@ from datetime import datetime,timedelta
 import sys,uuid,os,werkzeug,shutil
 import os.path as op
 from flask import Flask,url_for,request,render_template,session
+import superslomo_lstm_test as slomo_model
+import tensorflow as tf
 
 
 #reload(sys)
@@ -19,11 +21,12 @@ app = Flask(__name__, static_url_path='')  # ,static_folder='',
 
 upload_path="./static/upload"
 video_path="./static/video"
-os.makedirs(upload_path,  exist_ok=True)
-os.makedirs(video_path,  exist_ok=True)
+
+
 
 def clean_videos():
-    shutil.rmtree(upload_path)
+    if op.exists(upload_path): shutil.rmtree(upload_path)
+    if op.exists(video_path):  shutil.rmtree(video_path)
     
 
 def random_filename(filename):
@@ -48,17 +51,23 @@ def uploadfile():
     if files is not None:
         filename=random_filename(files.filename)
         print (filename)
+        file_after=filename
         
         session['filename']=filename
         uploadvideo_path=op.join(upload_path, filename)
         files.save( uploadvideo_path)
         
-        
+        outpath=op.join(video_path, filename)
+        with tf.Session() as sess:
+            #slomo=Slomo_flow(sess)
+            slomo=slomo_model.Slomo_step2(sess)
+            #slomo=Step_two(sess)
+            outpath_h264=slomo.process_one_video( intercnt, uploadvideo_path, outpath)
+            os.remove(outpath)
+            
+            file_after=op.split(  outpath_h264 )[-1]
     
-    else: 
-        filename="example"
-    
-    return render_template('index.html', movie_name_ori=op.splitext(filename)[0], movie_name_slomo=op.splitext(filename)[0])
+    return render_template('index.html', movie_name_ori=op.splitext(filename)[0], movie_name_slomo=op.splitext(file_after)[0])
     
 
 #----------------------------------------------------------------------------------------
@@ -72,7 +81,11 @@ def not_found(e):
 #---------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
-    #print (url_for('static',filename='1.jpg') )
+    clean_videos()
+    
+    os.makedirs(upload_path,  exist_ok=True)
+    os.makedirs(video_path,  exist_ok=True)
+    
     app.debug = True#不可用于发布版本
     app.send_file_max_age_default=timedelta(seconds=1)
     app.config['MAX_CONTENT_LENGTH'] = 20 * 1024 * 1024   #  30M
