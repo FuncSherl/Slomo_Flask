@@ -6,9 +6,9 @@ Created on 2019年11月13日
 '''
 from flask import Flask
 from datetime import datetime,timedelta
-import sys,uuid,os,werkzeug,shutil
+import sys,uuid,os,werkzeug,shutil,cv2
 import os.path as op
-from flask import Flask,url_for,request,render_template,session
+from flask import Flask,url_for,request,render_template,session,redirect
 import superslomo_lstm_test as slomo_model
 import tensorflow as tf
 
@@ -22,7 +22,44 @@ app = Flask(__name__, static_url_path='')  # ,static_folder='',
 upload_path="./static/upload"
 video_path="./static/video"
 
+getfilename=lambda x:op.splitext(  op.split(x)[-1]  )[0]
 
+def convert_fps(inpath, outpath, intercnt):
+    videoCapture1 = cv2.VideoCapture(inpath)
+    frame_cnt1=videoCapture1.get(cv2.CAP_PROP_FRAME_COUNT)
+    fps1=int (videoCapture1.get(cv2.CAP_PROP_FPS) )
+    size1 = (int(videoCapture1.get(cv2.CAP_PROP_FRAME_WIDTH)), int(videoCapture1.get(cv2.CAP_PROP_FRAME_HEIGHT)))
+    print ("frame cnt:",frame_cnt1)
+    tep_path=op.splitext(inpath)[0]+"_tep.mp4"
+    
+    videoWrite = cv2.VideoWriter(tep_path, cv2.VideoWriter_fourcc(*'MJPG'), int (fps1),  size1)
+    
+    target_framecnt=(frame_cnt1-1)*(intercnt+1)+1
+    cnt=0
+    success, frame= videoCapture1.read()
+    while success and (frame is not None) and cnt<target_framecnt:
+        for i in range(intercnt+1):
+            if cnt<target_framecnt:
+                videoWrite.write(frame)
+                cnt+=1
+        success, frame= videoCapture1.read() 
+    
+    videoCapture1.release()
+    videoWrite.release()
+    if op.exists(inpath): os.remove(inpath)
+    
+    return convert_mp4_h264(tep_path, outpath)
+
+
+def convert_mp4_h264( inpath, outpath):
+    cmdstr="ffmpeg -i %s -vcodec libx264 -f mp4 %s"%(inpath, outpath)
+    print (cmdstr)
+    retn = os.system(cmdstr)
+    if not retn:  #right
+        if op.exists(inpath): os.remove(inpath)
+        return outpath
+    if op.exists(outpath): os.remove(outpath)
+    return inpath
 
 def clean_videos():
     if op.exists(upload_path): shutil.rmtree(upload_path)
@@ -39,21 +76,45 @@ def random_filename(filename):
 @app.route('/',methods=['GET','POST'])#  主页面
 def main_page():
     app.logger.debug(session)
-    return render_template('index.html', movie_name_ori="home", movie_name_slomo="home")
+    
+    uploadvideo_path=outpath='home.mp4'
+    tep=session.get('file_after')
+    if tep is not None:
+        outpath=tep
+    tep=session.get('file_fps')
+    if tep is not None:
+        uploadvideo_path=tep
+    
+        
+    return render_template('index.html', movie_name_ori=getfilename( uploadvideo_path), movie_name_slomo=getfilename(outpath)  )
 
 
 @app.route('/upload_file',methods=['POST'])#  file
-def uploadfile():
+def uploadfile():    
     print (request)
+    #删除上一次的video
+    tep=session.get('file_after')
+    if tep is not None:
+        if op.exists(tep): os.remove(tep)
+        print ("remove ",tep)
+        session.pop("file_after")
+    #删除上一次的video
+    tep=session.get('file_fps')
+    if tep is not None:
+        if op.exists(tep): os.remove(tep)
+        print ("remove ",tep)
+        session.pop("file_fps")
+    ###################################################################
     intercnt=request.form.get('intercnt', type=int,default=1)
     files = request.files.get('file')
+    
+    filename="home.mp4"
     
     if files is not None:
         filename=random_filename(files.filename)
         print (filename)
         file_after=filename
         
-        session['filename']=filename
         uploadvideo_path=op.join(upload_path, filename)
         files.save( uploadvideo_path)
         
@@ -62,12 +123,21 @@ def uploadfile():
             #slomo=Slomo_flow(sess)
             slomo=slomo_model.Slomo_step2(sess)
             #slomo=Step_two(sess)
-            outpath_h264=slomo.process_one_video( intercnt, uploadvideo_path, outpath)
-            os.remove(outpath)
+            oldfps=slomo.process_one_video( intercnt, uploadvideo_path, outpath)
             
-            file_after=op.split(  outpath_h264 )[-1]
-    
-    return render_template('index.html', movie_name_ori=op.splitext(filename)[0], movie_name_slomo=op.splitext(file_after)[0])
+        #convert to h264
+        outpath_h264=op.splitext(outpath)[0]+"_h264.mp4"
+            
+        outpath=convert_mp4_h264(outpath, outpath_h264)
+            
+        session['file_after']=outpath
+        #convert fps
+        uploadvideo_path_fps=op.splitext(uploadvideo_path)[0]+"_fps.mp4"
+        uploadvideo_path=convert_fps(uploadvideo_path, uploadvideo_path_fps, intercnt)
+        
+        session['file_fps']=uploadvideo_path    
+        #render_template('index.html', movie_name_ori=getfilename( uploadvideo_path), movie_name_slomo=getfilename(outpath)  )
+    return redirect( url_for("main_page") )
     
 
 #----------------------------------------------------------------------------------------

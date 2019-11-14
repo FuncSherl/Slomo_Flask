@@ -553,6 +553,7 @@ a.purchase {
 #upload_btn_td button{
 	width:40%;
 	height:60px;
+	font-size:1.2vw;
 }
 
 .upload_table{
