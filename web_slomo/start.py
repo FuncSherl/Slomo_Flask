@@ -9,8 +9,9 @@ from datetime import datetime,timedelta
 import sys,uuid,os,werkzeug,shutil,cv2
 import os.path as op
 from flask import Flask,url_for,request,render_template,session,redirect
-import superslomo_lstm_test as slomo_model
+import superslomo_lstm_test_withoutshape as slomo_model
 import tensorflow as tf
+
 
 
 #reload(sys)
@@ -118,10 +119,9 @@ def uploadfile():
         files.save( uploadvideo_path)
         
         outpath=op.join(video_path, filename)
+
         with tf.Session() as sess:
-            #slomo=Slomo_flow(sess)
             slomo=slomo_model.Slomo_step2(sess)
-            #slomo=Step_two(sess)
             oldfps=slomo.process_one_video( intercnt, uploadvideo_path, outpath)
             
         #convert to h264
