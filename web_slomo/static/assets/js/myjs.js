@@ -14,10 +14,11 @@ var video_ori = document.getElementById("video_ori");
 var video_slomo = document.getElementById("video_slomo");
 
 video_ori.ontimeupdate = function () { 
-	//console.log(this.currentTime);
+	console.log(this.currentTime);
+	console.log(video_slomo.currentTime);
 };
 
 video_slomo.ontimeupdate = function () { 
-	if (abs(video_ori.currentTime-this.currentTime)>0.1)video_ori.currentTime=this.currentTime;
+	if (Math.abs(video_ori.currentTime-this.currentTime)>0.1)video_ori.currentTime=this.currentTime;
 };
 
