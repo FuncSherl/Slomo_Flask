@@ -113,7 +113,6 @@ def uploadfile():
     if files is not None:
         filename=random_filename(files.filename)
         print (filename)
-        file_after=filename
         
         uploadvideo_path=op.join(upload_path, filename)
         files.save( uploadvideo_path)
