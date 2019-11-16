@@ -27,7 +27,7 @@ ucf_path=r'/media/sherl/本地磁盘/data_DL/UCF101_results'
 middleburey_path=r"/media/sherl/本地磁盘/data_DL/eval-color-allframes"
 
 version='Superslomo_v1_'
-
+'''
 inputvideodir='./testing_gif'
 outputvideodir='./outputvideos'   #输出的video的路径，会在该路径下新建文件夹
 
@@ -37,7 +37,7 @@ os.makedirs(outputvideodir,  exist_ok=True)
 video_lists=os.listdir(inputvideodir)  #['original.mp4', 'car-turn.mp4']  #
 inputvideo = [op.join(inputvideodir, i.strip()) for i in video_lists ]  #这里保存所有需要测的video的fullpath，后面根据这里的list进行测试
 
-
+'''
 
 mean_dataset=[102.1, 109.9, 110.0]
 
