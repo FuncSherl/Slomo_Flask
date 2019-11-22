@@ -12,19 +12,33 @@ import cv2,os,time
 from datetime import datetime
 import skimage
 import imageio
+import platform
+sys = platform.system()
 
+print ('tensorflow version:',tf.__version__,'  path:',tf.__path__)
 
 homepath=os.path.expanduser('~')
+DL_path=r'/media/sherl/本地磁盘/data_DL'
+
+if sys == "Windows":
+    homepath="D:/DL_model"
+    DL_path="D:/data_DL"
+
+
 print (homepath)
-#modelpath="Pictures/superslomo/SuperSlomo_2019-11-03_20-16-01_base_lr-0.000100_batchsize-10_maxstep-240000_add_step2_time_sequence"
-modelpath=r'/home/sherl/Pictures/superslomo/SuperSlomo_2019-11-02_13-56-35_base_lr-0.000100_batchsize-10_maxstep-240000_original_paper'
+
+modelpath=r'Pictures/superslomo/SuperSlomo_2019-11-02_13-56-35_base_lr-0.000100_batchsize-10_maxstep-240000_original_paper'
 
 modelpath=op.join(homepath, modelpath)
+#print (modelpath)
 
 meta_name=r'model_keep-239999.meta'
 
-ucf_path=r'/media/sherl/本地磁盘/data_DL/UCF101_results'
-middleburey_path=r"/media/sherl/本地磁盘/data_DL/eval-color-allframes"
+ucf_path=op.join(DL_path, r'UCF101_results')
+middleburey_path=op.join(DL_path, "eval-color-allframes")
+slowflow_train=op.join(DL_path, "slow_flow/slow_flow_teaser/sequence" ) #
+MPI_sintel_clean=op.join(DL_path, "MPI_Sintel/MPI-Sintel-complete/training/clean")
+
 
 version='Superslomo_v1_'
 '''
@@ -36,8 +50,8 @@ os.makedirs(outputvideodir,  exist_ok=True)
 
 video_lists=os.listdir(inputvideodir)  #['original.mp4', 'car-turn.mp4']  #
 inputvideo = [op.join(inputvideodir, i.strip()) for i in video_lists ]  #这里保存所有需要测的video的fullpath，后面根据这里的list进行测试
-
 '''
+
 
 mean_dataset=[102.1, 109.9, 110.0]
 
@@ -188,7 +202,7 @@ class Slomo_flow:
         return out
         
     
-    def eval_on_ucf_mini(self, ucf_path, outdir="my_frames"):
+    def eval_on_ucf_mini(self, ucf_path=ucf_path, outdir="my_frames"):
         '''
         :在ucf的superslomo提供的结果数据上进行生成并对比
         '''
@@ -370,7 +384,8 @@ class Slomo_flow:
         videoWrite.release()
         videoCapture.release()
         self.show_video_info( outpath)
-        
+        return fps
+    '''
         outgifpath=op.splitext(outpath)[0]+'.gif'
         print ('for convent, converting mp4->gif:',outpath,'->',outgifpath)
         self.convert_mp42gif(outpath, outgifpath)
@@ -378,6 +393,7 @@ class Slomo_flow:
         print ("for ppt show,merging two videos:")
         outgifpath=op.splitext(outpath)[0]+'_merged.gif'
         self.merge_two_videos(inpath, outpath, outgifpath)
+        '''
         
     
     def convert_mp42gif(self, inmp4, outgif):
@@ -827,10 +843,10 @@ class Step_two(Slomo_flow):
 
 if __name__=='__main__':
     with tf.Session() as sess:
-        slomo=Slomo_flow(sess)
+        slomo=Slomo_flow(sess, modelpath)
 
         #slomo=Step_two(sess)
-        slomo.process_video_list(inputvideo, outputvideodir, 6)
+        slomo.process_video_list(inputvideo, outputvideodir, 1, keep_shape=False)
         #slomo.eval_video_list(inputvideo,  2)
         #slomo.eval_on_ucf_mini(ucf_path)
        
