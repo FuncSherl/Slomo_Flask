@@ -113,11 +113,11 @@ class Slomo_step2(Slomo_flow):
         videoWrite.release()
         videoCapture.release()
         self.show_video_info( outpath)
-        
+        '''
         outh264path=op.splitext(outpath)[0]+'_h264.mp4'
         self.convert_mp4_h264(outpath, outh264path, False)
         print ("conver to h264 formate done!")
-        
+        '''
         return fps
         '''
         outgifpath=op.splitext(outpath)[0]+'.gif'
