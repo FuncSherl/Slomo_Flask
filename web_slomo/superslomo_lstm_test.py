@@ -17,7 +17,7 @@ from superslomo_test_withtime import *
 
 modelpath="Pictures/superslomo/SuperSlomo_2019-11-09_15-57-28_base_lr-0.000100_batchsize-10_maxstep-240000_LSTM_Version_fixshape"
 modelpath="Pictures/superslomo/SuperSlomo_2019-11-13_17-28-10_base_lr-0.000100_batchsize-6_maxstep-240000_TrainWith360pVersion"
-modelpath="Documents/xvhao/use_tensorflow/use_tensor/GAN_slomo/logs_superslomo/SuperSlomo_2019-11-13_17-28-10_base_lr-0.000100_batchsize-6_maxstep-240000"
+#modelpath="Documents/xvhao/use_tensorflow/use_tensor/GAN_slomo/logs_superslomo/SuperSlomo_2019-11-13_17-28-10_base_lr-0.000100_batchsize-6_maxstep-240000"
 modelpath=op.join(homepath, modelpath)
 
 

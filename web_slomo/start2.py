@@ -161,7 +161,7 @@ if __name__ == '__main__':
         os.makedirs(upload_path,  exist_ok=True)
         os.makedirs(video_path,  exist_ok=True)
         
-        app.debug = True#不可用于发布版本
+        #app.debug = True#不可用于发布版本
         app.send_file_max_age_default=timedelta(seconds=1)
         app.config['MAX_CONTENT_LENGTH'] = 20 * 1024 * 1024   #  30M
         app.secret_key = os.urandom(24)
