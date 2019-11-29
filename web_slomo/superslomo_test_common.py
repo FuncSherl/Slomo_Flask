@@ -42,8 +42,8 @@ MPI_sintel_clean=op.join(DL_path, "MPI_Sintel/MPI-Sintel-complete/training/clean
 
 
 version='Superslomo_v1_'
-'''
-inputvideodir=op.join(DL_path, "my_test_viedeos")
+
+inputvideodir="./testing_gif"  #op.join(DL_path, "my_test_viedeos")
 outputvideodir='./outputvideos'   #输出的video的路径，会在该路径下新建文件夹
 
 os.makedirs(inputvideodir,  exist_ok=True)
@@ -51,7 +51,7 @@ os.makedirs(outputvideodir,  exist_ok=True)
 
 video_lists=os.listdir(inputvideodir)  #['original.mp4', 'car-turn.mp4']  #
 inputvideo = [op.join(inputvideodir, i.strip()) for i in video_lists ]  #这里保存所有需要测的video的fullpath，后面根据这里的list进行测试
-'''
+
 base_lr=0.0001
 beta1=0.5
 lr_rate = base_lr #tf.train.exponential_decay(base_lr,  global_step=self.global_step, decay_steps=decay_steps, decay_rate=decay_rate)
