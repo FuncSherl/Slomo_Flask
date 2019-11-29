@@ -89,6 +89,8 @@ def main_page():
         
     return render_template('index.html', movie_name_ori=getfilename( uploadvideo_path), movie_name_slomo=getfilename(outpath)  )
 
+sess=tf.Session()
+slomo=slomo_model.Slomo_step2_LSTM(sess)
 
 @app.route('/upload_file',methods=['POST'])#  file
 def uploadfile():    
@@ -120,9 +122,7 @@ def uploadfile():
         
         outpath=op.join(video_path, filename)
 
-        with tf.Session() as sess:
-            slomo=slomo_model.Slomo_step2_LSTM(sess)
-            oldfps=slomo.process_one_video( intercnt, uploadvideo_path, outpath, keep_shape=False, withtrain=True)
+        oldfps=slomo.process_one_video( intercnt, uploadvideo_path, outpath, keep_shape=False, withtrain=True)
             
         #convert to h264
         outpath_h264=op.splitext(outpath)[0]+"_h264.mp4"
@@ -155,7 +155,7 @@ if __name__ == '__main__':
     os.makedirs(upload_path,  exist_ok=True)
     os.makedirs(video_path,  exist_ok=True)
     
-    app.debug = True#不可用于发布版本
+    #app.debug = True#不可用于发布版本
     app.send_file_max_age_default=timedelta(seconds=1)
     app.config['MAX_CONTENT_LENGTH'] = 20 * 1024 * 1024   #  30M
     app.secret_key = os.urandom(24)
