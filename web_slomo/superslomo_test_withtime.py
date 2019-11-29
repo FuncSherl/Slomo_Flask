@@ -21,9 +21,7 @@ modelpath=op.join(homepath, modelpath)
 
 version='Superslomo_v1_withtime_'
 
-base_lr=0.0001
-beta1=0.5
-lr_rate = base_lr #tf.train.exponential_decay(base_lr,  global_step=self.global_step, decay_steps=decay_steps, decay_rate=decay_rate)
+
 
 
 class Slomo_step2(Slomo_flow): 
@@ -34,15 +32,17 @@ class Slomo_step2(Slomo_flow):
         
         try:
             self.out_last_flow=self.graph.get_tensor_by_name("second_unet/strided_slice_89:0")
-            self.G_loss_all_for_finetune=self.graph.get_tensor_by_name("G_loss_all_for_finetune:0")
             
-            self.train_op_G = tf.train.AdamOptimizer(lr_rate, beta1=beta1, name="superslomo_adam_G_fintune").minimize(self.G_loss_all_for_finetune,  \
-                                                                                               var_list=self.first_para+self.sec_para  )
-            
+            self.G_loss_all_for_finetune=self.graph.get_tensor_by_name("G_loss_all_for_finetune:0")           
             
         except Exception as e:
+            self.G_loss_all_for_finetune=self.graph.get_tensor_by_name("add_7:0")
             print ("loading second_unet/strided_slice_89:0 error, give it to the child")
+            
+        self.train_op_G = self.Adam_finetune.minimize(self.G_loss_all_for_finetune, var_list=self.first_para+self.sec_para  )
         
+        self.sess.run(tf.global_variables_initializer())
+        self.saver.restore(self.sess, tf.train.latest_checkpoint(modelpath))
         
     def process_one_video(self, interpola_cnt, inpath, outpath, keep_shape=True, withtrain=False):
         '''
@@ -233,6 +233,7 @@ class Slomo_step2(Slomo_flow):
             
         videoCapture.release()
         
+        print ('video done:', op.split(inpath)[-1] )
         print ("mean psnr:", np.mean(kep_psnr))
         print ("mean ssim:", np.mean(kep_ssim))
         print ("this video timeused:",time.time()-video_sttime)

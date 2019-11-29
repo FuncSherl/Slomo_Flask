@@ -20,6 +20,7 @@ print ('tensorflow version:',tf.__version__,'  path:',tf.__path__)
 homepath=os.path.expanduser('~')
 DL_path=r'/media/sherl/本地磁盘/data_DL'
 
+
 if sys == "Windows":
     homepath="D:/DL_model"
     DL_path="D:/data_DL"
@@ -51,7 +52,9 @@ os.makedirs(outputvideodir,  exist_ok=True)
 video_lists=os.listdir(inputvideodir)  #['original.mp4', 'car-turn.mp4']  #
 inputvideo = [op.join(inputvideodir, i.strip()) for i in video_lists ]  #这里保存所有需要测的video的fullpath，后面根据这里的list进行测试
 '''
-
+base_lr=0.0001
+beta1=0.5
+lr_rate = base_lr #tf.train.exponential_decay(base_lr,  global_step=self.global_step, decay_steps=decay_steps, decay_rate=decay_rate)
 
 mean_dataset=[102.1, 109.9, 110.0]
 
@@ -59,8 +62,8 @@ class Slomo_flow:
     def __init__(self,sess, modelpath=modelpath):
         self.sess=sess
         print ("loading model:",modelpath)
-        saver = tf.train.import_meta_graph(op.join(modelpath, meta_name) )
-        saver.restore(self.sess, tf.train.latest_checkpoint(modelpath))
+        self.saver = tf.train.import_meta_graph(op.join(modelpath, meta_name) )
+        
         
         # get weights
         self.graph = tf.get_default_graph()
@@ -88,6 +91,25 @@ class Slomo_flow:
         
         self.outimgshape=self.outimg.get_shape().as_list() #self.outimgshape: [12, 180, 320, 3]
         self.videoshape=(self.outimgshape[2], self.outimgshape[1]) #w*h
+        
+        t_vars=tf.trainable_variables()
+        print ("trainable vars cnt:",len(t_vars))
+        self.first_para=[var for var in t_vars if var.name.startswith('first')]
+        self.sec_para=[var for var in t_vars if var.name.startswith('second')]
+        self.vgg_para=[var for var in t_vars if var.name.startswith('VGG')]
+        self.D_para=[var for var in t_vars if var.name.startswith('D')]
+        self.G_para=[var for var in t_vars if var.name.startswith('G')]
+        print ("first param len:",len(self.first_para))
+        print ("second param len:",len(self.sec_para))
+        print ("VGG param len:",len(self.vgg_para))
+        print ("D param len:",len(self.D_para))
+        print ("G param len:",len(self.G_para))
+        
+        self.Adam_finetune=tf.train.AdamOptimizer(lr_rate, beta1=beta1, name="superslomo_adam_G_fintune")
+        
+        self.sess.run(tf.global_variables_initializer())
+        self.saver.restore(self.sess, tf.train.latest_checkpoint(modelpath))
+        
         
     def getframes_throw_flow(self, frame0, frame2, cnt):
         '''
@@ -230,7 +252,7 @@ class Slomo_flow:
             cv2.imwrite(frame1_my_p, outf)
         
     
-    def process_video_list(self, invideolist, outdir, interpola_cnt=7,version=version,  keep_shape=True):
+    def process_video_list(self, invideolist, outdir, interpola_cnt=7,version=version,  keep_shape=True, withtraining=False):
         '''
         入口函数
         输入一个list包含每个video的完整路径：invideolist
@@ -248,7 +270,7 @@ class Slomo_flow:
             
             outputvideo=op.join( outputdir, fname)
             print ('\nvideo:',ind,"/",len(invideolist),"  ",i,'->', outputvideo)
-            self.process_one_video(interpola_cnt, i, outputvideo, keep_shape)
+            self.process_one_video(interpola_cnt, i, outputvideo, keep_shape, withtraining)
     
     def eval_video_list(self, invideolist,  interpola_cnt=7):
         '''
@@ -327,11 +349,12 @@ class Slomo_flow:
         print ("mean ssim:", np.mean(kep_ssim))
         
     
-    def process_one_video(self, interpola_cnt, inpath, outpath, keep_shape=True):
+    def process_one_video(self, interpola_cnt, inpath, outpath, keep_shape=True, withtraining=False):
         '''
         inpath:inputvideo's full path
         outpath:output video's full path
         keep_shape:if use direct G's output or calculate with optical flow to resize images
+        #这里的withtraining没有实现效果，在其子类中有相关实现
         '''
         videoCapture = cv2.VideoCapture(inpath)  
         
