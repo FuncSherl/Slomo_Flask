@@ -25,6 +25,10 @@ video_path="./static/video"
 
 getfilename=lambda x:op.splitext(  op.split(x)[-1]  )[0]
 
+sess=tf.Session()
+slomo=slomo_model.Slomo_step2_LSTM(sess)
+
+
 def convert_fps(inpath, outpath, intercnt):
     videoCapture1 = cv2.VideoCapture(inpath)
     frame_cnt1=videoCapture1.get(cv2.CAP_PROP_FRAME_COUNT)
@@ -120,8 +124,7 @@ def uploadfile():
         
         outpath=op.join(video_path, filename)
 
-        with tf.Session() as sess:
-            slomo=slomo_model.Slomo_step2_LSTM(sess)
+        with tf.Session() as sess:            
             oldfps=slomo.process_one_video( intercnt, uploadvideo_path, outpath, keep_shape=False, withtrain=True)
             
         #convert to h264
