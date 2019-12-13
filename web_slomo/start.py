@@ -122,7 +122,7 @@ def uploadfile():
         
         outpath=op.join(video_path, filename)
 
-        oldfps=slomo.process_one_video( intercnt, uploadvideo_path, outpath, keep_shape=False, withtrain=True)
+        oldfps=slomo.process_one_video( intercnt, uploadvideo_path, outpath, keep_shape=False, withtrain=False)
             
         #convert to h264
         outpath_h264=op.splitext(outpath)[0]+"_h264.mp4"
